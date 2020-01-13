@@ -1,5 +1,5 @@
 
-// $('#mapid').height(window.innerHeight);
+
 $('#slide-in').height(window.innerHeight);
 
 
@@ -28,12 +28,15 @@ function handleClickSlideIn() {
   })
 }
 
-function getEventData() {
-  fetch('https://eonet.sci.gsfc.nasa.gov/api/v3-beta/events/geojson?limit=20&status=open',{
+function getDefaultEventData() {
+  // CHANGE THIS TO DEFAULT TO ALL EVENTS IN THE LAST 30 DAYS 
+  // "https://eonet.sci.gsfc.nasa.gov/api/v3-beta/events?start=2020-01-01&end=2020-01-12"
+  fetch('https://eonet.sci.gsfc.nasa.gov/api/v3-beta/events/geojson?days=30',{
     method:'GET'
   })
     .then(response => response.json())
     .then(json => {
+      //assign the response to the global data object - filter this
       data = json
       // call render function that houses the below
       L.geoJSON(json)
@@ -42,11 +45,6 @@ function getEventData() {
       }).addTo(map);
     })
     .catch(error => console.log(error.message));
-}
-
-// build this out later
-function handleEventTypeFilter() {
-  // filter through all the global data of events by types currently selected then call render again
 }
 
 function setCountryFeatures() {
@@ -70,12 +68,68 @@ function setCountryFeatures() {
   });
 }
 
+// WORKING IN HERE TO RENDER A LIST OF CATEGORIES WITH VALUES
+function renderCategories(jsonResponse){
+  categoryOptionsText = ''
+  for (i=0; i<jsonResponse.categories.length; i++){
+    categoryOptionsText += `<div class="option"><input type="checkbox" name="option" value="${jsonResponse.categories[i].id}">
+    <label for="option">${jsonResponse.categories[i].title}</label></div>`
+  }
+
+  // console.log(`Here are the options: ${categoryOptionsText}`)
+  // Return HTML with category options
+  const optionsHTML = `<form class='options-form'>
+            <fieldset>
+              ${categoryOptionsText}
+           </fieldset>
+           <button type="submit" class="category-submit-button button">Submit Categories</button>
+          </form>` 
+  $('.categories-form-container').html(optionsHTML);
+}
+
+function getCategories(){
+  const apiCategories = 'https://eonet.sci.gsfc.nasa.gov/api/v3-beta/categories';
+  fetch(apiCategories,{
+    method:'GET'
+  })
+    .then(response => response.json())
+    .then(json => {
+      console.log(json)
+      // call a render function to render categories onto a form
+      renderCategories(json)
+    })
+    .catch(error => console.log(error.message));
+}
+
+function handleCategorySearch(){
+  $('.search-by-cat').on('click', function(e) {
+    e.preventDefault();
+    getCategories();
+  })
+}
+
+///////////////////////////////
+
+// build this out later
+function handleCategoryFilter() {
+  // filter through all the global data of events by types currently selected then call render again
+  $('.categories-form-container').on('submit', '.options-form', function(e) {
+    e.preventDefault();
+    // Get values
+    debugger;
+    const selectedOption = $(e.currentTarget).find("input[name=option]:checked").val();
+    // Rerender with only those categories
+  })
+
+}
+
 function start() {
-  console.log('rendering map')
   initializeMap()
-  getEventData()
-  handleClickSlideIn()
   setCountryFeatures()
+  getDefaultEventData()
+  handleCategorySearch()
+  handleCategoryFilter()
+  handleClickSlideIn()
 }
 
 $(start);

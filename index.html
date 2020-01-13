@@ -6,15 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>EONET Event Explorer</title>
 
-    <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
-
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
     <link rel="stylesheet" href="index.css">
     
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
-    <!-- May not need turf -->
-    <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+
 
     <script src="index.js"></script>
     <script src='data/countries.geo.json' type="text/javascript"></script>
@@ -25,20 +22,17 @@
 
     <div id="slide-in">
         <h2>More Information</h2>
+        <p>Coming soon...</p>
         <!-- More coming here -->
     </div>
     
     <div id='overlay'>
-        <h2>Map Options</h2>
+        <h2>NASA Natural Events</h2>
         <div id="current_center"></div>
-        <h2>Search Filter</h2>
-        <form>
-            <input type="radio" name="eventType" value="Wildfires" checked>Wildfires<br>
-            <input type="radio" name="eventType" value="Severe Storms">Severe Storms<br>
-            <input type="radio" name="eventType" value="Sea and Lake Ice">Sea and Lake Ice<br>
-            <input type="submit" value="Submit">
-          </form> 
-        <button id="advanced">More information (slide-in)</button>
+        <h2>Filter events</h2>
+        <button class="search-by-cat">Filter Events by Category</button>
+        <div class="categories-form-container"></div>
+        <button id="side-panel-btn">More information (slide-in)</button>
     </div>
     
     <div id="mapid" style="width: 100%;"></div>
