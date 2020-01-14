@@ -5,6 +5,7 @@ $('#slide-in').height(window.innerHeight);
 
 let data = [];
 let map = [];
+let allEventFeatures = [];
 
 function initializeMap() {
   $('#mapid').height(window.innerHeight);
@@ -39,7 +40,7 @@ function getDefaultEventData() {
       //assign the response to the global data object - filter this
       data = json
       // call render function that houses the below
-      L.geoJSON(json)
+      allEventFeatures = L.geoJSON(json)
       .bindPopup(function(layer){
           return `<strong>Title</strong>: ${layer.feature.properties.title}<br>Date:${layer.feature.properties.date}`
       }).addTo(map);
@@ -115,10 +116,22 @@ function handleCategoryFilter() {
   // filter through all the global data of events by types currently selected then call render again
   $('.categories-form-container').on('submit', '.options-form', function(e) {
     e.preventDefault();
-    // Get values
-    debugger;
-    const selectedOption = $(e.currentTarget).find("input[name=option]:checked").val();
-    // Rerender with only those categories
+    // Get values in an array
+    const optionsList = $(e.currentTarget).find("input[name=option]:checked").toArray().map(input => input.value).map(Number);
+
+    console.log(optionsList)
+    // Clear the map - I need to find the specific layer
+    map.removeLayer(allEventFeatures);
+    
+    // Rerender with only those categories - how to filter based on those categories? 
+    L.geoJSON(data, {
+      filter: function(feature, layer) {
+          return optionsList.includes(feature.properties.categories[0].id);
+      }
+    }).bindPopup(function(layer){
+    return `<strong>Title</strong>: ${layer.feature.properties.title}<br>Date:${layer.feature.properties.date}`
+    }).addTo(map);
+
   })
 
 }
