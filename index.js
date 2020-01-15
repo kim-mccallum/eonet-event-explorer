@@ -1,13 +1,12 @@
 
-
-$('#slide-in').height(window.innerHeight);
-
-
+// Globals
 let data = [];
 let map = [];
 let allEventFeatures = [];
+let filteredFeatures = [];
 
 function initializeMap() {
+  $('#slide-in').height(window.innerHeight);
   $('#mapid').height(window.innerHeight);
   map = L.map('mapid',{
     zoomControl: false
@@ -30,7 +29,7 @@ function handleClickSlideIn() {
 }
 
 function getDefaultEventData() {
-  // CHANGE THIS TO DEFAULT TO ALL EVENTS IN THE LAST 30 DAYS 
+  // THIS SHOULD GET ALL EVENTS IN THE LAST 30 DAYS BUT I THINK IT'S MISBHEAVING
   // "https://eonet.sci.gsfc.nasa.gov/api/v3-beta/events?start=2020-01-01&end=2020-01-12"
   fetch('https://eonet.sci.gsfc.nasa.gov/api/v3-beta/events/geojson?days=30',{
     method:'GET'
@@ -69,7 +68,7 @@ function setCountryFeatures() {
   });
 }
 
-// WORKING IN HERE TO RENDER A LIST OF CATEGORIES WITH VALUES
+//RENDER A LIST OF CATEGORIES WITH VALUES
 function renderCategories(jsonResponse){
   categoryOptionsText = ''
   for (i=0; i<jsonResponse.categories.length; i++){
@@ -111,7 +110,11 @@ function handleCategorySearch(){
 
 ///////////////////////////////
 
-// build this out later
+function clearMapEvents() {
+  map.removeLayer(allEventFeatures);
+  map.removeLayer(filteredFeatures);
+}
+// display filtered events
 function handleCategoryFilter() {
   // filter through all the global data of events by types currently selected then call render again
   $('.categories-form-container').on('submit', '.options-form', function(e) {
@@ -119,12 +122,11 @@ function handleCategoryFilter() {
     // Get values in an array
     const optionsList = $(e.currentTarget).find("input[name=option]:checked").toArray().map(input => input.value).map(Number);
 
-    console.log(optionsList)
-    // Clear the map - I need to find the specific layer
-    map.removeLayer(allEventFeatures);
-    
+    // Remove events
+    clearMapEvents();
+
     // Rerender with only those categories - how to filter based on those categories? 
-    L.geoJSON(data, {
+    filteredFeatures = L.geoJSON(data, {
       filter: function(feature, layer) {
           return optionsList.includes(feature.properties.categories[0].id);
       }
