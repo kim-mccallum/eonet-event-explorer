@@ -1,4 +1,3 @@
-
 // Globals
 let data = [];
 let map = [];
@@ -88,6 +87,7 @@ function renderCategories(jsonResponse){
 }
 
 function getCategories(){
+  // This was working and they changed id to a string!
   const apiCategories = 'https://eonet.sci.gsfc.nasa.gov/api/v3-beta/categories';
   fetch(apiCategories,{
     method:'GET'
@@ -119,9 +119,13 @@ function handleCategoryFilter() {
   // filter through all the global data of events by types currently selected then call render again
   $('.categories-form-container').on('submit', '.options-form', function(e) {
     e.preventDefault();
-    // Get values in an array
-    const optionsList = $(e.currentTarget).find("input[name=option]:checked").toArray().map(input => input.value).map(Number);
 
+
+    // Get values in an array
+    const optionsList = $(e.currentTarget).find("input[name=option]:checked").toArray().map(input => input.value)//.map(Number);
+    
+    
+    console.log(`Do these look right: ${optionsList}`);
     // Remove events
     clearMapEvents();
 
