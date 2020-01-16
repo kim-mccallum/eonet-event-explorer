@@ -1,19 +1,18 @@
 // Globals
 let data = [];
 let map = [];
+let eventCategories = [];
 let allEventFeatures = [];
 let filteredFeatures = [];
 
 const eonetURL = 'https://eonet.sci.gsfc.nasa.gov/api/v3-beta'
 
 function initializeMap() {
-  $('#slide-in').height(window.innerHeight);
   $('#mapid').height(window.innerHeight);
   map = L.map('mapid',{
     zoomControl: false
   })
-  .setView([40.55972134684838,-110.56640625], 3);
-
+  //Add basemap
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
   }).addTo(map);
@@ -48,7 +47,7 @@ function getDefaultEventData() {
       // call render function that houses the below
       allEventFeatures = L.geoJSON(json)
       .bindPopup(function(layer){
-          return `<strong>Title</strong>: ${layer.feature.properties.title}<br>Date:${layer.feature.properties.date}`
+        return `<strong>Title</strong>: ${layer.feature.properties.title}<br>Date:${layer.feature.properties.date}<br>Category:${layer.feature.properties.categories[0].title}`
       }).addTo(map);
     })
     .catch(error => console.log(error.message));
@@ -71,7 +70,7 @@ function setCountryFeatures() {
       .addTo(map);
 
   map.fitBounds(countryFeatures.getBounds(), {
-    padding: [-40,-250]
+    padding: [-40,-200]
   });
 }
 
@@ -82,7 +81,6 @@ function renderCategories(jsonResponse){
     categoryOptionsText += `<div class="option"><input type="checkbox" name="option" value="${jsonResponse.categories[i].id}">
     <label for="option">${jsonResponse.categories[i].title}</label></div>`
   }
-
   // console.log(`Here are the options: ${categoryOptionsText}`)
   // Return HTML with category options
   const optionsHTML = `<form class='options-form'>
@@ -95,15 +93,15 @@ function renderCategories(jsonResponse){
 }
 
 function getCategories(){
-  
   fetch(`${eonetURL}/categories`,{
     method:'GET'
   })
     .then(response => response.json())
     .then(json => {
       console.log(json)
+      eventCategories = json
       // call a render function to render categories onto a form
-      renderCategories(json)
+      // renderCategories(json)
     })
     .catch(error => console.log(error.message));
 }
@@ -111,7 +109,8 @@ function getCategories(){
 function handleCategorySearch(){
   $('.search-by-cat').on('click', function(e) {
     e.preventDefault();
-    getCategories();
+    // getCategories();
+    renderCategories(eventCategories)
   })
 }
 
@@ -121,16 +120,15 @@ function clearMapEvents() {
   map.removeLayer(allEventFeatures);
   map.removeLayer(filteredFeatures);
 }
+
 // display filtered events
 function handleCategoryFilter() {
   // filter through all the global data of events by types currently selected then call render again
   $('.categories-form-container').on('submit', '.options-form', function(e) {
     e.preventDefault();
 
-
     // Get values in an array
     const optionsList = $(e.currentTarget).find("input[name=option]:checked").toArray().map(input => input.value)//.map(Number);
-    
     
     console.log(`Selected categories: ${optionsList}`);
     // Remove events
@@ -142,7 +140,7 @@ function handleCategoryFilter() {
           return optionsList.includes(feature.properties.categories[0].id);
       }
     }).bindPopup(function(layer){
-    return `<strong>Title</strong>: ${layer.feature.properties.title}<br>Date:${layer.feature.properties.date}`
+    return `<strong>Title</strong>: ${layer.feature.properties.title}<br>Date:${layer.feature.properties.date}<br>Category:${layer.feature.properties.categories[0].title}`
     }).addTo(map);
     // reset map bounds to fit filtered features
     map.fitBounds(filteredFeatures.getBounds(), {
@@ -158,18 +156,13 @@ function handleCategoryFilter() {
 function start() {
   initializeMap()
   setCountryFeatures()
+  getCategories()
   getDefaultEventData()
   handleCategorySearch()
   handleCategoryFilter()
-  handleClickSlideIn()
 }
 
 $(start);
 
-// /// Try to figure out how to add WMTS and this isn't going well
-// const testLayer = L.tileLayer('https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=MODIS_Terra_CorrectedReflectance_TrueColor&STYLE=&TILEMATRIXSET=250m&TILEMATRIX=6&TILEROW=13&TILECOL=36&FORMAT=image%2Fjpeg&TIME=2012-07-09', {
-//     attribution: 'Later'
-//   });
 
-// testLayer.addTo(map);
 
