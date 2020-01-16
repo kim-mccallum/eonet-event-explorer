@@ -4,6 +4,8 @@ let map = [];
 let allEventFeatures = [];
 let filteredFeatures = [];
 
+const eonetURL = 'https://eonet.sci.gsfc.nasa.gov/api/v3-beta'
+
 function initializeMap() {
   $('#slide-in').height(window.innerHeight);
   $('#mapid').height(window.innerHeight);
@@ -27,10 +29,26 @@ function handleClickSlideIn() {
   })
 }
 
+function formatEventRequest() {
+  // get dates - Today
+  const td = new Date();
+  const endDate = `${td.getFullYear()}-${td.getMonth()+1}-${td.getDate()}`
+
+  // 30 days ago
+  const sd = new Date();
+  sd.setDate(sd.getDate() - 30);
+  const startDate = `${sd.getFullYear()}-${sd.getMonth()+1}-${sd.getDate()}`
+
+  // formatted request
+  return `${eonetURL}/events/geojson?start=${startDate}&end=${endDate}`
+}
+
 function getDefaultEventData() {
-  // THIS SHOULD GET ALL EVENTS IN THE LAST 30 DAYS BUT I THINK IT'S MISBHEAVING
+  // THIS GETS ALL EVENTS IN THE LAST 30 DAYS BUT I THOUGHT IT WAS MISBHEAVING - JUST ICEBERGS
+  const eventRequest = formatEventRequest()
   // "https://eonet.sci.gsfc.nasa.gov/api/v3-beta/events?start=2020-01-01&end=2020-01-12"
-  fetch('https://eonet.sci.gsfc.nasa.gov/api/v3-beta/events/geojson?days=30',{
+  // fetch('https://eonet.sci.gsfc.nasa.gov/api/v3-beta/events/geojson?days=30',{
+  fetch(eventRequest,{
     method:'GET'
   })
     .then(response => response.json())
@@ -87,9 +105,8 @@ function renderCategories(jsonResponse){
 }
 
 function getCategories(){
-  // This was working and they changed id to a string!
-  const apiCategories = 'https://eonet.sci.gsfc.nasa.gov/api/v3-beta/categories';
-  fetch(apiCategories,{
+  
+  fetch(`${eonetURL}/categories`,{
     method:'GET'
   })
     .then(response => response.json())
