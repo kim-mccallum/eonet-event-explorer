@@ -71,7 +71,7 @@ function setCountryFeatures() {
       .addTo(map);
 
   map.fitBounds(countryFeatures.getBounds(), {
-    padding: [-40,-175]
+    padding: [-40,-250]
   });
 }
 
@@ -144,6 +144,10 @@ function handleCategoryFilter() {
     }).bindPopup(function(layer){
     return `<strong>Title</strong>: ${layer.feature.properties.title}<br>Date:${layer.feature.properties.date}`
     }).addTo(map);
+    // reset map bounds to fit filtered features
+    map.fitBounds(filteredFeatures.getBounds(), {
+        padding: [20,20]
+    });
 
   })
 
