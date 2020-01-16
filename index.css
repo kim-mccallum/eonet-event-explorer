@@ -19,24 +19,8 @@ body {
     max-width: 230px;
 }
 
-#overlay h2, #slide-in h2 {
+#overlay h2 {
     margin: 0;
     padding: 0;
     margin-bottom: 10px;
-}
-#slide-in {
-    padding:10px;
-    position:absolute;
-    width:250px;
-    height:100vh;
-    z-index: 1000;
-    background:green;
-    margin-left: -250px;
-    transition:1.5s;
-}
-#slider {
-    margin-top: 50px;
-}
-#slide-in.in{
-    margin-left:0px;
 }

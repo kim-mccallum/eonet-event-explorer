@@ -19,16 +19,6 @@ function initializeMap() {
   }).addTo(map);
 }
 
-function handleClickSlideIn() {
-  $('#side-panel-btn').on('click', function() {
-    if($('#slide-in').hasClass('in')) {
-        $('#slide-in').removeClass('in')
-    } else {
-        $('#slide-in').addClass('in')
-    }
-  })
-}
-
 function formatEventRequest() {
   // get dates - Today
   const td = new Date();
@@ -142,7 +132,7 @@ function handleCategoryFilter() {
     const optionsList = $(e.currentTarget).find("input[name=option]:checked").toArray().map(input => input.value)//.map(Number);
     
     
-    console.log(`Do these look right: ${optionsList}`);
+    console.log(`Selected categories: ${optionsList}`);
     // Remove events
     clearMapEvents();
 
@@ -159,6 +149,8 @@ function handleCategoryFilter() {
 
 }
 
+////////////////////////////////////////////////////////
+
 function start() {
   initializeMap()
   setCountryFeatures()
@@ -169,3 +161,11 @@ function start() {
 }
 
 $(start);
+
+// /// Try to figure out how to add WMTS and this isn't going well
+// const testLayer = L.tileLayer('https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=MODIS_Terra_CorrectedReflectance_TrueColor&STYLE=&TILEMATRIXSET=250m&TILEMATRIX=6&TILEROW=13&TILECOL=36&FORMAT=image%2Fjpeg&TIME=2012-07-09', {
+//     attribution: 'Later'
+//   });
+
+// testLayer.addTo(map);
+
