@@ -7,6 +7,23 @@ let filteredFeatures = [];
 
 const eonetURL = 'https://eonet.sci.gsfc.nasa.gov/api/v3-beta'
 
+///////////// Maybe I'll use these?
+var blackIcon = L.icon({
+  iconUrl: 'maps-and-flags.svg',
+  iconSize: [64,74],
+  iconAnchor: [32,74],
+  popupAnchor: [0,-50]
+});
+
+var redIcon = L.icon({
+  iconUrl: 'maps-and-flags-red.svg',
+  iconSize: [64,74],
+  iconAnchor: [32,74],
+  popupAnchor: [0,-50]
+    });
+
+//////////// Functions //////////////////
+
 function initializeMap() {
   $('#mapid').height(window.innerHeight);
   map = L.map('mapid',{
@@ -45,9 +62,32 @@ function getDefaultEventData() {
       //assign the response to the global data object - filter this
       data = json
       // call render function that houses the below
-      allEventFeatures = L.geoJSON(json)
+      allEventFeatures = L.geoJSON(json
+      //   , {
+      //   pointToLayer: function(geoJsonPoint,latlng){
+      //       return L.marker(latlng,{
+      //           icon: blackIcon
+      //       });
+      //   },
+      //   onEachFeature: function(feature,layer){
+      //     layer.on('mouseover',function(e) {
+      //         e.target.setIcon(redIcon)
+      //     })
+      //     layer.on('mouseout',function(e) {
+      //         e.target.setIcon(blackIcon)
+      //     })  
+      // }
+      // }
+      )
       .bindPopup(function(layer){
-        return `<strong>Title</strong>: ${layer.feature.properties.title}<br>Date:${layer.feature.properties.date}<br>Category:${layer.feature.properties.categories[0].title}`
+        let description = ''
+        for(i=0;i<eventCategories.categories.length;i++){
+          if (eventCategories.categories[i].title === layer.feature.properties.categories[0].title){
+            console.log('match');
+            description = eventCategories.categories[i].description
+          }
+        }
+        return `<strong>Event title</strong>:  ${layer.feature.properties.title}<br><strong>Date:  ${layer.feature.properties.date}</strong><br><strong>Source:</strong>  ${layer.feature.properties.sources[0].url}<br><strong>Category description:</strong>  ${description}`
       }).addTo(map);
     })
     .catch(error => console.log(error.message));
@@ -62,7 +102,15 @@ function setCountryFeatures() {
             opacity: 0.8,
             weight: 0.5
         }
-      }
+      },
+      onEachFeature: function(feature,layer){
+        layer.on('mouseover',function(e) {
+            e.target.setStyle({color: '#ccccb3', weight: 1})
+        })
+        layer.on('mouseout',function(e) {
+            e.target.setStyle({color: '#20003f', weight: 0.5})
+        })  
+    }
     })
     .bindPopup(function(layer){
         return `<strong>${layer.feature.properties.name}</strong>`
@@ -140,7 +188,14 @@ function handleCategoryFilter() {
           return optionsList.includes(feature.properties.categories[0].id);
       }
     }).bindPopup(function(layer){
-    return `<strong>Title</strong>: ${layer.feature.properties.title}<br>Date:${layer.feature.properties.date}<br>Category:${layer.feature.properties.categories[0].title}`
+      let description = ''
+      for(i=0;i<eventCategories.categories.length;i++){
+        if (eventCategories.categories[i].title === layer.feature.properties.categories[0].title){
+          console.log('match');
+          description = eventCategories.categories[i].description
+        }
+      }
+      return `<strong>Event title</strong>:  ${layer.feature.properties.title}<br><strong>Date:  ${layer.feature.properties.date}</strong><br><strong>Source:</strong>  ${layer.feature.properties.sources[0].url}<br><strong>Category description:</strong>  ${description}`
     }).addTo(map);
     // reset map bounds to fit filtered features
     map.fitBounds(filteredFeatures.getBounds(), {
