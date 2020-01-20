@@ -217,7 +217,7 @@ function handleCategoryFilter() {
     }).addTo(map);
     // reset map bounds to fit filtered features
     map.fitBounds(filteredFeatures.getBounds(), {
-        padding: [20,20]
+        padding: [50,50]
     });
 
   })

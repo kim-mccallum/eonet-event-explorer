@@ -1,7 +1,12 @@
 body {
     margin:0;
     padding: 0;
-    color: #1c1a17
+    color: #1c1a17;
+    font-family: 'Quicksand', sans-serif;
+}
+
+p, .button{
+    font-family: 'Muli', sans-serif;
 }
 
 #mapid {
@@ -47,13 +52,18 @@ h1, p {
 }
 
 .button {
-    /* color: green; */
+    font-weight:bold;
     background-color: #e8c58b;
-    border: 1px solid #e28800;
+    border: 1px solid #d99e3f;
     border-radius: 4px;
     margin: 0 auto;
     display: block;
 }
+
+input:hover {
+    color: #ffe9b3;
+    box-shadow: 0 5px 15px #272a1f;
+   }
 
 .button:hover {
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
