@@ -121,7 +121,7 @@ function setCountryFeatures() {
       .addTo(map);
 
   map.fitBounds(countryFeatures.getBounds(), {
-    padding: [-40,-200]
+    padding: [-40,-250]
   });
 }
 
