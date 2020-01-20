@@ -8,19 +8,24 @@ let filteredFeatures = [];
 const eonetURL = 'https://eonet.sci.gsfc.nasa.gov/api/v3-beta'
 
 ///////////// Maybe I'll use these?
-var blackIcon = L.icon({
-  iconUrl: 'maps-and-flags.svg',
-  iconSize: [64,74],
-  iconAnchor: [32,74],
-  popupAnchor: [0,-50]
-});
+// var blackIcon = L.icon({
+//   iconUrl: 'maps-and-flags.svg',
+//   iconSize: [38, 95],
+//   iconAnchor: [22, 94],
+//   popupAnchor: [-3, -76]
+// });
 
-var redIcon = L.icon({
-  iconUrl: 'maps-and-flags-red.svg',
-  iconSize: [64,74],
-  iconAnchor: [32,74],
-  popupAnchor: [0,-50]
-    });
+var defaultIcon = new L.Icon.Default();
+
+var bigDefaultIcon = new L.Icon.Default();
+bigDefaultIcon.options.iconSize = [30,46];
+
+// var redIcon = L.icon({
+//   iconUrl: 'maps-and-flags-red.svg',
+//   iconSize: [38, 95],
+//   iconAnchor: [22, 94],
+//   popupAnchor: [-3, -76]
+//     });
 
 //////////// Functions //////////////////
 
@@ -62,24 +67,22 @@ function getDefaultEventData() {
       //assign the response to the global data object - filter this
       data = json
       // call render function that houses the below
-      allEventFeatures = L.geoJSON(json
-      //   , {
-      //   pointToLayer: function(geoJsonPoint,latlng){
-      //       return L.marker(latlng,{
-      //           icon: blackIcon
-      //       });
-      //   },
-      //   onEachFeature: function(feature,layer){
-      //     layer.on('mouseover',function(e) {
-      //         e.target.setIcon(redIcon)
-      //     })
-      //     layer.on('mouseout',function(e) {
-      //         e.target.setIcon(blackIcon)
-      //     })  
-      // }
-      // }
-      )
-      .bindPopup(function(layer){
+      allEventFeatures = L.geoJSON(json, {
+        pointToLayer: function(geoJsonPoint,latlng){
+            return L.marker(latlng,{
+                icon: defaultIcon,
+                riseOnHover: true
+            });
+        },
+        onEachFeature: function(feature,layer){
+          layer.on('mouseover',function(e) {
+              e.target.setIcon(bigDefaultIcon).rise
+          })
+          layer.on('mouseout',function(e) {
+              e.target.setIcon(defaultIcon)
+          })  
+      }
+      }).bindPopup(function(layer){
         let description = ''
         for(i=0;i<eventCategories.categories.length;i++){
           if (eventCategories.categories[i].title === layer.feature.properties.categories[0].title){
@@ -97,7 +100,7 @@ function setCountryFeatures() {
   const countryFeatures = L.geoJSON(COUNTRIES, {
     style:function(feature){
         return {
-            color: '#20003f',
+            color: '#1e0f24',
             fillOpacity:0, 
             opacity: 0.8,
             weight: 0.5
@@ -105,10 +108,10 @@ function setCountryFeatures() {
       },
       onEachFeature: function(feature,layer){
         layer.on('mouseover',function(e) {
-            e.target.setStyle({color: '#ccccb3', weight: 1})
+            e.target.setStyle({color: '#964bb4', weight: 1})
         })
         layer.on('mouseout',function(e) {
-            e.target.setStyle({color: '#20003f', weight: 0.5})
+            e.target.setStyle({color: '#1e0f24', weight: 0.5})
         })  
     }
     })
@@ -186,8 +189,23 @@ function handleCategoryFilter() {
     filteredFeatures = L.geoJSON(data, {
       filter: function(feature, layer) {
           return optionsList.includes(feature.properties.categories[0].id);
-      }
-    }).bindPopup(function(layer){
+      },
+      pointToLayer: function(geoJsonPoint,latlng){
+        return L.marker(latlng,{
+            icon: defaultIcon,
+            riseOnHover: true
+        });
+    },
+    onEachFeature: function(feature,layer){
+      layer.on('mouseover',function(e) {
+          e.target.setIcon(bigDefaultIcon).rise
+      })
+      layer.on('mouseout',function(e) {
+          e.target.setIcon(defaultIcon)
+      })  
+  }
+    })
+    .bindPopup(function(layer){
       let description = ''
       for(i=0;i<eventCategories.categories.length;i++){
         if (eventCategories.categories[i].title === layer.feature.properties.categories[0].title){
