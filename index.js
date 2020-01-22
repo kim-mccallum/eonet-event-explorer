@@ -7,37 +7,42 @@ let filteredFeatures = [];
 
 const eonetURL = 'https://eonet.sci.gsfc.nasa.gov/api/v3-beta'
 
-///////////// Maybe I'll use these?
-// var blackIcon = L.icon({
-//   iconUrl: 'maps-and-flags.svg',
-//   iconSize: [38, 95],
-//   iconAnchor: [22, 94],
-//   popupAnchor: [-3, -76]
-// });
-
-var defaultIcon = new L.Icon.Default();
-
-var bigDefaultIcon = new L.Icon.Default();
+//Icons for events
+const defaultIcon = new L.Icon.Default();
+const bigDefaultIcon = new L.Icon.Default();
 bigDefaultIcon.options.iconSize = [30,46];
-
-// var redIcon = L.icon({
-//   iconUrl: 'maps-and-flags-red.svg',
-//   iconSize: [38, 95],
-//   iconAnchor: [22, 94],
-//   popupAnchor: [-3, -76]
-//     });
 
 //////////// Functions //////////////////
 
 function initializeMap() {
   $('#mapid').height(window.innerHeight);
-  map = L.map('mapid',{
-    zoomControl: false
-  })
+  // map = L.map('mapid',{
+  //   zoomControl: false
+  // })
+
+  //Try to constrain the map 
+  map = L.map('mapid')
   //Add basemap
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+    maxZoom: 18,
+    // // Removing the wrap shows empty tiles and it's not pretty
+    // noWrap: true
   }).addTo(map);
+
+  map.fitWorld( { animate: false } );
+
+  //Code from stack overflow question https://stackoverflow.com/questions/22155017/can-i-prevent-panning-leaflet-map-out-of-the-worlds-edge
+  const southWest = L.latLng(-89.98155760646617, -180),
+  northEast = L.latLng(89.99346179538875, 180);
+  const bounds = L.latLngBounds(southWest, northEast);
+
+  map.setMaxBounds(bounds);
+  map.on('drag', function() {
+      map.panInsideBounds(bounds, { animate: false });
+  });
+  //Trying to prevent zooming out beyond map - code below from here: https://gis.stackexchange.com/questions/224383/leaflet-maxbounds-doesnt-prevent-zooming-out
+  map.setMinZoom(map.getBoundsZoom(map.options.maxBounds));
 }
 
 function formatEventRequest() {
@@ -108,7 +113,8 @@ function setCountryFeatures() {
       },
       onEachFeature: function(feature,layer){
         layer.on('mouseover',function(e) {
-            e.target.setStyle({color: '#964bb4', weight: 1})
+            // e.target.setStyle({color: '#964bb4', weight: 1})
+            e.target.setStyle({color: '#cc00cc', weight: 1})
         })
         layer.on('mouseout',function(e) {
             e.target.setStyle({color: '#1e0f24', weight: 0.5})
@@ -215,7 +221,8 @@ function handleCategoryFilter() {
       }
       return `<strong>Event title</strong>:  ${layer.feature.properties.title}<br><strong>Date:  ${layer.feature.properties.date}</strong><br><strong>Source:</strong>  ${layer.feature.properties.sources[0].url}<br><strong>Category description:</strong>  ${description}`
     }).addTo(map);
-    // reset map bounds to fit filtered features
+
+    // reset map bounds to fit filtered features - Add logic so this doesn't error if there are no events in this category
     map.fitBounds(filteredFeatures.getBounds(), {
         padding: [50,50]
     });
