@@ -28,7 +28,34 @@ p, .button{
     background-color: #08121e;
 }
 
-#overlay  {
+#filter-slide{
+    position:absolute;
+    right:0px;
+    z-index: 1000;
+    background: #c1c5ba;
+    font-size:25px;
+    cursor:pointer
+}
+/* Try to style the slide-in */
+#slide-in {
+    padding:10px;
+    position:absolute;
+    /* right:0px; */
+    width:250px;
+    z-index: 1000;
+    background: rgba(194, 190, 180,0.7);
+    border-radius: 10px;
+    box-shadow: 1px 1px 1px grey;
+    margin-left: -250px;
+    margin-top: 100px;
+    transition:1.5s;
+}
+
+#slide-in.in{
+    margin-left:0px;
+}
+
+/* .overlay  {
     position: absolute;
     z-index: 1000;
     background: rgba(194, 190, 180,0.7);
@@ -38,7 +65,7 @@ p, .button{
     margin-top:5px;
     border-radius: 10px;
     box-shadow: 1px 1px 1px grey;
-}
+} */
 
 .button {
     font-weight:bold;

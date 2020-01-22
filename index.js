@@ -7,7 +7,7 @@ let filteredFeatures = [];
 
 const eonetURL = 'https://eonet.sci.gsfc.nasa.gov/api/v3-beta'
 
-//Icons for events
+//Marker icons for events
 const defaultIcon = new L.Icon.Default();
 const bigDefaultIcon = new L.Icon.Default();
 bigDefaultIcon.options.iconSize = [30,46];
@@ -129,13 +129,18 @@ function setCountryFeatures() {
 // MAP FILTERING INTERACTIVITY
 
 // START HERE TOMORROW AND GET ALI'S HELP
-function slideInButton(){
-  $('#slide-in-button').on('click', function(e) {
+function slideInCategories(){
+  $('#filter-slide').on('click', function(e) {
     e.preventDefault();
-    debugger;
     //MAKE THIS SLIDE-IN AND SLIDE-OUT THE CATEGORY MENU
+    if($('#slide-in').hasClass('in')) {
+      $('#slide-in').removeClass('in')
+    } else {
+      $('#slide-in').addClass('in')
+  }
   })
 }
+
 
 //RENDER A LIST OF CATEGORIES WITH VALUES
 function renderCategories(jsonResponse){
@@ -170,7 +175,7 @@ function getCategories(){
 }
 
 function handleCategorySearch(){
-  $('.search-by-cat').on('click', function(e) {
+  $('#filter-slide').on('click', function(e) {
     e.preventDefault();
 
     renderCategories(eventCategories)
@@ -243,6 +248,7 @@ function handleCategoryFilter() {
 function start() {
   initializeMap()
   setCountryFeatures()
+  slideInCategories()
   getCategories()
   getDefaultEventData()
   handleCategorySearch()

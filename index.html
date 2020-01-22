@@ -17,8 +17,7 @@
     
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
-    <!-- Add font awesome for bars -->
-    <script src="https://use.fontawesome.com/313637d50f.js"></script>
+
 
 
     <script src="index.js"></script>
@@ -35,12 +34,14 @@
 
 <body>
     
-    <div id='overlay'>
-        <!-- <div id="current_center"></div> -->
-        <button class="search-by-cat button">Filter Events by Category</button>
+    <div class='overlay' id="slide-in">
+        <p>Filter Events by Category</p>
         <div class="categories-form-container"></div>
     </div>
+
+    <span id="filter-slide">&#x25c1; Filter Events</span>
     
+    <!-- The Map -->
     <div id="mapid"></div>
         
 </body>
