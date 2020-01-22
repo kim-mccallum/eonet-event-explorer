@@ -15,23 +15,18 @@ bigDefaultIcon.options.iconSize = [30,46];
 //////////// Functions //////////////////
 
 function initializeMap() {
-  $('#mapid').height(window.innerHeight);
-  // map = L.map('mapid',{
-  //   zoomControl: false
-  // })
-
-  //Try to constrain the map 
   map = L.map('mapid')
   //Add basemap
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
     maxZoom: 18,
-    // // Removing the wrap shows empty tiles and it's not pretty
+    // // REMOVING THE WRAP TO PREVENT THE WORLD REPEATING, DOES NOT LOOK GOOD AS THERE ARE EMPTY TILES IN THE BASEMAP
     // noWrap: true
   }).addTo(map);
-
+  //Fit the map to the world
   map.fitWorld( { animate: false } );
 
+  //Trying to constrain the map so you can't pan off the map
   //Code from stack overflow question https://stackoverflow.com/questions/22155017/can-i-prevent-panning-leaflet-map-out-of-the-worlds-edge
   const southWest = L.latLng(-89.98155760646617, -180),
   northEast = L.latLng(89.99346179538875, 180);
@@ -60,7 +55,7 @@ function formatEventRequest() {
 }
 
 function getDefaultEventData() {
-  // THIS GETS ALL EVENTS IN THE LAST 30 DAYS BUT I THOUGHT IT WAS MISBHEAVING - JUST ICEBERGS
+  // THIS GETS ALL EVENTS IN THE LAST 30 DAYS BUT I THOUGHT IT WAS MISBHEAVING BUT IT TURNS OUT ICEBERGS ARE ODD
   const eventRequest = formatEventRequest()
   // "https://eonet.sci.gsfc.nasa.gov/api/v3-beta/events?start=2020-01-01&end=2020-01-12"
   // fetch('https://eonet.sci.gsfc.nasa.gov/api/v3-beta/events/geojson?days=30',{
@@ -131,6 +126,17 @@ function setCountryFeatures() {
   });
 }
 
+// MAP FILTERING INTERACTIVITY
+
+// START HERE TOMORROW AND GET ALI'S HELP
+function slideInButton(){
+  $('#slide-in-button').on('click', function(e) {
+    e.preventDefault();
+    debugger;
+    //MAKE THIS SLIDE-IN AND SLIDE-OUT THE CATEGORY MENU
+  })
+}
+
 //RENDER A LIST OF CATEGORIES WITH VALUES
 function renderCategories(jsonResponse){
   categoryOptionsText = ''
@@ -166,10 +172,11 @@ function getCategories(){
 function handleCategorySearch(){
   $('.search-by-cat').on('click', function(e) {
     e.preventDefault();
-    // getCategories();
+
     renderCategories(eventCategories)
   })
 }
+
 
 ///////////////////////////////
 
