@@ -8,24 +8,29 @@ body {
 h1, p {
     margin: 0;
     padding: 0;
-    padding-bottom: 5px;
+    padding-bottom: 3px;
     text-align: center;
 }
 
 .banner {
     background-color: #08121e;
     color: white;
-    height: 28vh;
+    height: 24vh;
+    /* border: 1px solid red; */
 }
 
 p, .button{
     font-family: 'Muli', sans-serif;
 }
 
+fieldset{
+    font-size: 10px;
+}
+
 #mapid {
-    height: 73vh;
-    /* border: 1px solid red; */
+    height: 76vh;
     background-color: #08121e;
+    z-index: 800;
 }
 
 .overlay{
@@ -52,17 +57,21 @@ p, .button{
     right:110px;
     z-index: 1000;
     color: red;
-    font-weight: bold;
+    /* font-weight: bold; */
     font-size:30px;
     cursor:pointer
 }
 
-.filter-button:hover, #right:hover, #left:hover{
+.filter-button:hover{
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+#right:hover, #left:hover{
+    font-weight: bold;
 }
 /* Try to style the slide-in */
 #slide-in {
-    padding:10px;
+    padding:5px;
     position:absolute;
     right:0px;
     width:250px;
@@ -71,7 +80,7 @@ p, .button{
     border-radius: 10px;
     box-shadow: 1px 1px 1px grey;
     margin-right: -250px;
-    margin-top: 60px;
+    margin-top: 45px;
     transition:1.5s;
 }
 
@@ -98,11 +107,33 @@ input:hover {
   }
 
 /* Change some styles for larger screens */
-@media screen and (min-width: 720px) {
+@media screen and (min-width: 400px) {
+    .banner {
+        height: 20vh;
+    }
+    #mapid {
+        height: 80vh;
+    }  
+    #slide-in {
+        padding:12px;
+    }
+    fieldset{
+        font-size: 16px;
+    }
+}
+@media screen and (min-width: 700px) {
     .banner {
         height: 15vh;
     }
     #mapid {
         height: 85vh;
+    }  
+}
+@media screen and (min-width: 1000px) {
+    .banner {
+        height: 11vh;
+    }
+    #mapid {
+        height: 87vh;
     }  
 }
