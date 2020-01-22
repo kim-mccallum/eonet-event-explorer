@@ -28,7 +28,7 @@ p, .button{
     background-color: #08121e;
 }
 
-#filter-slide{
+.filter-slide{
     position:absolute;
     right:0px;
     z-index: 1000;
@@ -36,23 +36,32 @@ p, .button{
     font-size:25px;
     cursor:pointer
 }
+#left, #right{
+    position:absolute;
+    right:180px;
+    z-index: 1000;
+    background: #c1c5ba;
+    font-size:25px;
+    cursor:pointer
+}
+
 /* Try to style the slide-in */
 #slide-in {
     padding:10px;
     position:absolute;
-    /* right:0px; */
+    right:0px;
     width:250px;
     z-index: 1000;
     background: rgba(194, 190, 180,0.7);
     border-radius: 10px;
     box-shadow: 1px 1px 1px grey;
-    margin-left: -250px;
-    margin-top: 100px;
+    margin-right: -250px;
+    margin-top: 50px;
     transition:1.5s;
 }
 
 #slide-in.in{
-    margin-left:0px;
+    margin-right:0px;
 }
 
 /* .overlay  {
@@ -90,7 +99,6 @@ input:hover {
     .banner {
         height: 15vh;
     }
-
     #mapid {
         height: 85vh;
     }  

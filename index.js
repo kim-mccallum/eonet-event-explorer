@@ -126,17 +126,17 @@ function setCountryFeatures() {
   });
 }
 
-// MAP FILTERING INTERACTIVITY
-
-// START HERE TOMORROW AND GET ALI'S HELP
+// START HERE TOMORROW AND GET HELP
 function slideInCategories(){
-  $('#filter-slide').on('click', function(e) {
+  $('.filter-slide').on('click', function(e) {
     e.preventDefault();
-    //MAKE THIS SLIDE-IN AND SLIDE-OUT THE CATEGORY MENU
+
     if($('#slide-in').hasClass('in')) {
-      $('#slide-in').removeClass('in')
+      $('#slide-in').removeClass('in');
+      $('#right').hide();
     } else {
-      $('#slide-in').addClass('in')
+      $('#slide-in').addClass('in');
+      $('#right').show();
   }
   })
 }
@@ -166,22 +166,19 @@ function getCategories(){
   })
     .then(response => response.json())
     .then(json => {
-      console.log(json)
+      // console.log(json)
       eventCategories = json
-      // call a render function to render categories onto a form
-      // renderCategories(json)
     })
     .catch(error => console.log(error.message));
 }
 
 function handleCategorySearch(){
-  $('#filter-slide').on('click', function(e) {
+  $('.filter-slide').on('click', function(e) {
     e.preventDefault();
 
     renderCategories(eventCategories)
   })
 }
-
 
 ///////////////////////////////
 
@@ -197,7 +194,7 @@ function handleCategoryFilter() {
     e.preventDefault();
 
     // Get values in an array
-    const optionsList = $(e.currentTarget).find("input[name=option]:checked").toArray().map(input => input.value)//.map(Number);
+    const optionsList = $(e.currentTarget).find("input[name=option]:checked").toArray().map(input => input.value)
     
     console.log(`Selected categories: ${optionsList}`);
     // Remove events
@@ -234,10 +231,20 @@ function handleCategoryFilter() {
       return `<strong>Event title</strong>:  ${layer.feature.properties.title}<br><strong>Date:  ${layer.feature.properties.date}</strong><br><strong>Source:</strong>  ${layer.feature.properties.sources[0].url}<br><strong>Category description:</strong>  ${description}`
     }).addTo(map);
 
-    // reset map bounds to fit filtered features - Add logic so this doesn't error if there are no events in this category
-    map.fitBounds(filteredFeatures.getBounds(), {
-        padding: [50,50]
-    });
+    var totalEvents = filteredFeatures.getLayers().length;
+    console.log(totalEvents)
+
+    if(filteredFeatures.getLayers().length > 0){
+        // reset map bounds to fit filtered features - Add logic so this doesn't error if there are no events in this category
+        map.fitBounds(filteredFeatures.getBounds(), {
+          padding: [50,50]
+      });
+    }
+    else {
+      alert(`No recent events found in the category: ${optionsList}`)
+    }
+
+
 
   })
 
