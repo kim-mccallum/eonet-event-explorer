@@ -243,11 +243,8 @@ function handleCategoryFilter() {
       });
     }
     else {
-      alert(`No recent events found in the category: ${optionsList}`)
+      alert(`No recent events found in the category: ${optionsList} \nTry another category.`)
     }
-
-
-
   })
 
 }

@@ -15,7 +15,7 @@ h1, p {
 .banner {
     background-color: #08121e;
     color: white;
-    height: 22vh;
+    height: 28vh;
 }
 
 p, .button{
@@ -23,7 +23,7 @@ p, .button{
 }
 
 #mapid {
-    height: 78vh;
+    height: 73vh;
     /* border: 1px solid red; */
     background-color: #08121e;
 }
@@ -46,6 +46,7 @@ p, .button{
 #right{
     display:none;
 }
+
 #left, #right{
     position:absolute;
     right:110px;
