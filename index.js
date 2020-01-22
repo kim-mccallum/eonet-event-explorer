@@ -133,9 +133,11 @@ function slideInCategories(){
 
     if($('#slide-in').hasClass('in')) {
       $('#slide-in').removeClass('in');
+      $('#left').show();
       $('#right').hide();
     } else {
       $('#slide-in').addClass('in');
+      $('#left').hide();
       $('#right').show();
   }
   })
