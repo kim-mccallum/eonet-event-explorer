@@ -15,7 +15,7 @@ h1, p {
 .banner {
     background-color: #08121e;
     color: white;
-    height: 24vh;
+    height: 26vh;
     /* border: 1px solid red; */
 }
 
@@ -28,7 +28,7 @@ fieldset{
 }
 
 #mapid {
-    height: 76vh;
+    height: 74vh;
     background-color: #08121e;
     z-index: 800;
 }
@@ -131,9 +131,9 @@ input:hover {
 }
 @media screen and (min-width: 1000px) {
     .banner {
-        height: 11vh;
+        height: 12vh;
     }
     #mapid {
-        height: 87vh;
+        height: 86vh;
     }  
 }
