@@ -1,32 +1,32 @@
-// Globals
+// Global variables for map features
 let data = [];
 let map = [];
 let eventCategories = [];
 let allEventFeatures = [];
 let filteredFeatures = [];
 
+// API 
 const eonetURL = 'https://eonet.sci.gsfc.nasa.gov/api/v3-beta'
 
-//Marker icons for events
+// Global variable for map style - Marker icons for events
 const defaultIcon = new L.Icon.Default();
 const bigDefaultIcon = new L.Icon.Default();
 bigDefaultIcon.options.iconSize = [30,46];
 
 //////////// Functions //////////////////
 
+// Create the Leaflet map
 function initializeMap() {
   map = L.map('mapid')
-  //Add basemap
+  //Add satellite mosaic basemap
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
     maxZoom: 18,
-    // // REMOVING THE WRAP TO PREVENT THE WORLD REPEATING, DOES NOT LOOK GOOD AS THERE ARE EMPTY TILES IN THE BASEMAP
-    // noWrap: true
   }).addTo(map);
   //Fit the map to the world
   map.fitWorld( { animate: false } );
 
-  //Trying to constrain the map so you can't pan off the map
+  //Constrain the map so you can't pan off the map
   //Code from stack overflow question https://stackoverflow.com/questions/22155017/can-i-prevent-panning-leaflet-map-out-of-the-worlds-edge
   const southWest = L.latLng(-89.98155760646617, -180),
   northEast = L.latLng(89.99346179538875, 180);
@@ -36,16 +36,16 @@ function initializeMap() {
   map.on('drag', function() {
       map.panInsideBounds(bounds, { animate: false });
   });
-  //Trying to prevent zooming out beyond map - code below from here: https://gis.stackexchange.com/questions/224383/leaflet-maxbounds-doesnt-prevent-zooming-out
+  //Prevent zooming out beyond map - code below from here: https://gis.stackexchange.com/questions/224383/leaflet-maxbounds-doesnt-prevent-zooming-out
   map.setMinZoom(map.getBoundsZoom(map.options.maxBounds));
 }
 
 function formatEventRequest() {
-  // get dates - Today
+  // get date - Today
   const td = new Date();
   const endDate = `${td.getFullYear()}-${td.getMonth()+1}-${td.getDate()}`
 
-  // 30 days ago
+  // get date - 30 days ago
   const sd = new Date();
   sd.setDate(sd.getDate() - 30);
   const startDate = `${sd.getFullYear()}-${sd.getMonth()+1}-${sd.getDate()}`
@@ -55,16 +55,15 @@ function formatEventRequest() {
 }
 
 function getDefaultEventData() {
-  // THIS GETS ALL EVENTS IN THE LAST 30 DAYS BUT I THOUGHT IT WAS MISBHEAVING BUT IT TURNS OUT ICEBERGS ARE ODD
   const eventRequest = formatEventRequest()
-  // "https://eonet.sci.gsfc.nasa.gov/api/v3-beta/events?start=2020-01-01&end=2020-01-12"
+  // In theory the request below should work but it was acting strange so I made the formatEventRequest()
   // fetch('https://eonet.sci.gsfc.nasa.gov/api/v3-beta/events/geojson?days=30',{
   fetch(eventRequest,{
     method:'GET'
   })
     .then(response => response.json())
     .then(json => {
-      //assign the response to the global data object - filter this
+      //assign the response to the global data object - filter this later
       data = json
       // call render function that houses the below
       allEventFeatures = L.geoJSON(json, {
@@ -96,6 +95,7 @@ function getDefaultEventData() {
     .catch(error => console.log(error.message));
 }
 
+// Add countries and some interactivity 
 function setCountryFeatures() {
   const countryFeatures = L.geoJSON(COUNTRIES, {
     style:function(feature){
@@ -108,7 +108,6 @@ function setCountryFeatures() {
       },
       onEachFeature: function(feature,layer){
         layer.on('mouseover',function(e) {
-            // e.target.setStyle({color: '#964bb4', weight: 1})
             e.target.setStyle({color: '#cc00cc', weight: 1})
         })
         layer.on('mouseout',function(e) {
@@ -126,7 +125,7 @@ function setCountryFeatures() {
   });
 }
 
-// START HERE TOMORROW AND GET HELP
+// Make the category filter menu slide in and out
 function slideInCategories(){
   $('.filter-slide').on('click', function(e) {
     e.preventDefault();
@@ -142,7 +141,6 @@ function slideInCategories(){
   }
   })
 }
-
 
 //RENDER A LIST OF CATEGORIES WITH VALUES
 function renderCategories(jsonResponse){
@@ -174,6 +172,7 @@ function getCategories(){
     .catch(error => console.log(error.message));
 }
 
+// Get and render the categories when the user wants to filter
 function handleCategorySearch(){
   $('.filter-slide').on('click', function(e) {
     e.preventDefault();
@@ -182,8 +181,7 @@ function handleCategorySearch(){
   })
 }
 
-///////////////////////////////
-
+// Remove feature from the map to make way for the filtered features
 function clearMapEvents() {
   map.removeLayer(allEventFeatures);
   map.removeLayer(filteredFeatures);
@@ -199,10 +197,10 @@ function handleCategoryFilter() {
     const optionsList = $(e.currentTarget).find("input[name=option]:checked").toArray().map(input => input.value)
     
     console.log(`Selected categories: ${optionsList}`);
-    // Remove events
+    // Remove events on the map to make room
     clearMapEvents();
 
-    // Rerender with only those categories - how to filter based on those categories? 
+    // Rerender with only those categories selected - Add some interactivity
     filteredFeatures = L.geoJSON(data, {
       filter: function(feature, layer) {
           return optionsList.includes(feature.properties.categories[0].id);
@@ -226,7 +224,6 @@ function handleCategoryFilter() {
       let description = ''
       for(i=0;i<eventCategories.categories.length;i++){
         if (eventCategories.categories[i].title === layer.feature.properties.categories[0].title){
-          console.log('match');
           description = eventCategories.categories[i].description
         }
       }
@@ -234,22 +231,22 @@ function handleCategoryFilter() {
     }).addTo(map);
 
     var totalEvents = filteredFeatures.getLayers().length;
-    console.log(totalEvents)
+    // console.log(totalEvents)
 
     if(filteredFeatures.getLayers().length > 0){
-        // reset map bounds to fit filtered features - Add logic so this doesn't error if there are no events in this category
+        // reset map bounds to fit filtered features - Add logic so this doesn't error if there are no events in thw category
         map.fitBounds(filteredFeatures.getBounds(), {
           padding: [50,50]
       });
     }
     else {
-      alert(`No recent events found in selected category: ${optionsList} \nTry another category.`)
+      alert(`No recent events found in selected category: ${optionsList}. \nTry another category.`)
     }
   })
 
 }
 
-////////////////////////////////////////////////////////
+////////////////////////////////////// Call all the functions to 'run' the map //////////////////////////////////////////////
 
 function start() {
   initializeMap()

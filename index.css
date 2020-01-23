@@ -16,7 +16,6 @@ h1, p {
     background-color: #08121e;
     color: white;
     height: 26vh;
-    /* border: 1px solid red; */
 }
 
 p, .button{
@@ -57,7 +56,6 @@ fieldset{
     right:110px;
     z-index: 1000;
     color: red;
-    /* font-weight: bold; */
     font-size:30px;
     cursor:pointer
 }
@@ -69,7 +67,7 @@ fieldset{
 #right:hover, #left:hover{
     font-weight: bold;
 }
-/* Try to style the slide-in */
+
 #slide-in {
     padding:5px;
     position:absolute;
